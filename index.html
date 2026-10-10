@@ -113,5 +113,46 @@ if(sharedDate && allDates.some(x=>x.key===sharedDate[1])){
   renderCalendar(monthFilter.value);
   openDate(key);
 }
+ 
+function showAdminRecords() {
+  const records = JSON.parse(
+    localStorage.getItem('koethaneos_demo_records') || '[]'
+  );
+
+  const panel = document.createElement('section');
+  panel.style.cssText =
+    'background:#171717;color:white;padding:20px;margin:20px;border-radius:12px';
+
+  const title = document.createElement('h2');
+  title.textContent = 'KOETHANEOS - Registros guardados';
+  panel.appendChild(title);
+
+  const count = document.createElement('p');
+  count.textContent = 'Total de registros: ' + records.length;
+  panel.appendChild(count);
+
+  records.forEach((record, index) => {
+    const item = document.createElement('pre');
+    item.style.cssText =
+      'white-space:pre-wrap;overflow-wrap:anywhere;background:#292929;padding:12px;border-radius:8px';
+    item.textContent =
+      'Registro #' + (index + 1) + '\n' +
+      Object.entries(record)
+        .map(([key, value]) => key + ': ' + value)
+        .join('\n');
+    panel.appendChild(item);
+  });
+
+  document.body.appendChild(panel);
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+const adminButton = document.createElement('button');
+adminButton.textContent = 'Ver registros guardados';
+adminButton.style.cssText =
+  'display:block;margin:20px auto;padding:14px;background:#7c3aed;color:white;border:0;border-radius:10px';
+adminButton.addEventListener('click', showAdminRecords);
+document.body.appendChild(adminButton);
+ 
 </script>
 </body></html>
