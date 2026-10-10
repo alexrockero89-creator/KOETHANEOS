@@ -106,5 +106,12 @@ back.addEventListener('click',e=>{if(e.target===back)back.classList.remove('open
 document.getElementById('kind').addEventListener('change',e=>{document.getElementById('businessLabel').style.display=e.target.value==='negocio'?'grid':'none';document.getElementById('dateLabel').style.display=e.target.value==='negocio'?'none':'grid'});
 document.getElementById('leadForm').addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target);const records=JSON.parse(localStorage.getItem('koethaneos_demo_records')||'[]');records.push(Object.fromEntries(fd.entries()));localStorage.setItem('koethaneos_demo_records',JSON.stringify(records));document.getElementById('success').classList.add('show');e.target.reset();});
 renderCalendar();
+ const sharedDate=location.hash.match(/^#fecha=(\d{2}-\d{2})$/);
+if(sharedDate && allDates.some(x=>x.key===sharedDate[1])){
+  const key=sharedDate[1];
+  monthFilter.value=String(Number(key.split('-')[1])-1);
+  renderCalendar(monthFilter.value);
+  openDate(key);
+}
 </script>
 </body></html>
