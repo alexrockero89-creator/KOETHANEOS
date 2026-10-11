@@ -114,6 +114,7 @@ if(sharedDate && allDates.some(x=>x.key===sharedDate[1])){
   openDate(key);
 }
  
+
 function showAdminRecords() {
   const records = JSON.parse(
     localStorage.getItem('koethaneos_demo_records') || '[]'
@@ -132,21 +133,60 @@ function showAdminRecords() {
   panel.appendChild(count);
 
   records.forEach((record, index) => {
+    const container = document.createElement('div');
+    container.style.cssText =
+      'background:#292929;padding:12px;margin:12px 0;border-radius:8px';
+
     const item = document.createElement('pre');
     item.style.cssText =
-      'white-space:pre-wrap;overflow-wrap:anywhere;background:#292929;padding:12px;border-radius:8px';
+      'white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 12px';
+
     item.textContent =
       'Registro #' + (index + 1) + '\n' +
       Object.entries(record)
         .map(([key, value]) => key + ': ' + value)
         .join('\n');
-    panel.appendChild(item);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '🗑️ Eliminar este registro';
+    deleteButton.style.cssText =
+      'background:#dc2626;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:bold';
+
+    deleteButton.addEventListener('click', () => {
+      if (!confirm('¿Seguro que deseas eliminar el registro #' +
+          (index + 1) + '? Esta acción no se puede deshacer.')) {
+        return;
+      }
+
+      const currentRecords = JSON.parse(
+        localStorage.getItem('koethaneos_demo_records') || '[]'
+      );
+
+      if (index < 0 || index >= currentRecords.length) {
+        alert('La lista cambió. Actualiza el panel e inténtalo de nuevo.');
+        return;
+      }
+
+      currentRecords.splice(index, 1);
+
+      localStorage.setItem(
+        'koethaneos_demo_records',
+        JSON.stringify(currentRecords)
+      );
+
+      panel.remove();
+      showAdminRecords();
+    });
+
+    container.appendChild(item);
+    container.appendChild(deleteButton);
+    panel.appendChild(container);
   });
 
   document.body.appendChild(panel);
   panel.scrollIntoView({ behavior: 'smooth' });
 }
-
+ 
 const adminButton = document.createElement('button');
 adminButton.textContent = 'Ver registros guardados';
 adminButton.style.cssText =
